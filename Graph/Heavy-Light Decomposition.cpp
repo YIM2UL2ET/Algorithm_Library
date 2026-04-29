@@ -1,13 +1,7 @@
 const int MAXV = 101010;
 
 struct HLD {        // 0-index, point update & range query
-  struct SegTree {  // 1-index
-    void Update(int i, int v);
-    int Query(int l, int r);
-
-    /* Implementation */
-  } seg;
-
+  /* Import Segment Tree */
   int pv, sz[MAXV], head[MAXV], in[MAXV], par[MAXV];
   vector<int> adj[MAXV];
 
@@ -38,12 +32,9 @@ struct HLD {        // 0-index, point update & range query
 
   void Init() {
     pv = head[0] = 0;
-    memset(sz, 0, sizeof sz);
-    memset(in, 0, sizeof in);
-    for (int i = 0; i < MAXV; i++)
-      if (!sz[i]) GetSize(i, i);
-    for (int i = 0; i < MAXV; i++)
-      if (!in[i]) Ordering(i, i);
+    memset(sz, 0, sizeof sz), memset(in, 0, sizeof in);
+    for (int i = 0; i < MAXV; i++) if (!sz[i]) GetSize(i, i);
+    for (int i = 0; i < MAXV; i++) if (!in[i]) Ordering(i, i);
   }
 
   int Query(int u, int v) {

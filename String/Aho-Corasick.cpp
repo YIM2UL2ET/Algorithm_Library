@@ -1,14 +1,10 @@
+const int ASZ = 26;
 struct Trie {
-  Trie *go[26], *fail;
-  bool output;
+  Trie *go[ASZ], *fail; bool output;
+  Trie() : fail(nullptr), output(false) { fill(go, go + ASZ, nullptr); }
+  ~Trie() { for (int i = 0; i < ASZ; i++) if (go[i]) delete go[i]; }
 
-  Trie() : fail(nullptr), output(false) { fill(go, go + 26, nullptr); }
-  ~Trie() {
-    for (int i = 0; i < 26; i++)
-      if (go[i]) delete go[i];
-  }
-
-  void Insert(const string &P) {
+  void insert(const string &P) {
     Trie *cur = this;
     for (auto &ch : P) {
       Trie *&nxt = cur->go[ch - 'a'];
@@ -18,19 +14,15 @@ struct Trie {
     cur->output = true;
   }
 
-  void CalcFailureFunc() {
+  void calc_failure_function() {
     queue<Trie *> Q;
-    Q.push(this);
-
-    this->fail = this;
+    Q.push(this), this->fail = this;
     while (!Q.empty()) {
       Trie *cur = Q.front();
       Q.pop();
-
-      for (int i = 0; i < 26; i++) {
+      for (int i = 0; i < ASZ; i++) {
         Trie *&nxt = cur->go[i];
         if (!nxt) continue;
-
         if (cur == this) {
           nxt->fail = this;
         } else {
@@ -39,14 +31,13 @@ struct Trie {
           if (dst->go[i]) dst = dst->go[i];
           nxt->fail = dst;
         }
-
         nxt->output |= nxt->fail->output;
         Q.push(nxt);
       }
     }
   }
 
-  bool AhoCorasick(const string &T) {
+  bool ahocorasick(const string &T) {
     Trie *cur = this;
     for (auto &ch : T) {
       while (cur != this && !cur->go[ch - 'a']) cur = cur->fail;
